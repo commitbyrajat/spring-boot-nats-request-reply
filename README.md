@@ -5,7 +5,6 @@ A production-ready example demonstrating the request-reply messaging pattern usi
 [![Java](https://img.shields.io/badge/Java-21-orange.svg)](https://openjdk.java.net/projects/jdk/21/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.0.1-brightgreen.svg)](https://spring.io/projects/spring-boot)
 [![NATS](https://img.shields.io/badge/NATS-2.24.1-blue.svg)](https://nats.io/)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ## 🚀 Features
 
