@@ -1,0 +1,77 @@
+services:
+  nats:
+    image: nats:2.12-alpine
+    container_name: nats-server
+    ports:
+      - "4222:4222"  # Client connections
+      - "8222:8222"  # HTTP monitoring
+      - "6222:6222"  # Cluster routes
+    command:
+      - "--http_port=8222"
+      - "--js"       # Enable JetStream
+      - "--sd=/data" # JetStream storage directory
+    volumes:
+      - nats-data:/data
+    networks:
+      - nats-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8222/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  nats-nui:
+    image: ghcr.io/nats-nui/nui:latest
+    container_name: nats-nui
+    ports:
+      - "31311:31311"  # NUI Web Interface
+    volumes:
+      - nui-data:/db
+    environment:
+      - NUI_DB_PATH=/db/nui.db
+    networks:
+      - nats-network
+    depends_on:
+      nats:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:31311"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+networks:
+  nats-network:
+    driver: bridge
+
+volumes:
+  nats-data:
+    driver: local
+  nui-data:
+    driver: local
+
+#services:
+#  nats:
+#    image: nats:2.12-alpine
+#    ports:
+#      - "4222:4222"  # Client connections
+#      - "8222:8222"  # HTTP monitoring
+#      - "6222:6222"  # Cluster routes
+#    command:
+#      - "--http_port=8222"
+#      - "--js"       # Enable JetStream
+#    volumes:
+#      - nats-data:/data
+#    restart: unless-stopped
+#    healthcheck:
+#      test: ["CMD", "nats", "server", "check"]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 3
+#
+#volumes:
+#  nats-data:

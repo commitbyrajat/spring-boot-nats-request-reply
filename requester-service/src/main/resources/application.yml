@@ -1,0 +1,37 @@
+server:
+  port: 8080
+
+nats:
+  server:
+    url: nats://localhost:4222
+  request:
+    timeout: 5000  # milliseconds
+  connection:
+    name: requester-service
+    max-reconnect: 10
+    reconnect-wait: 2000
+    ping-interval: 30000
+
+spring:
+  application:
+    name: requester-service
+  threads:
+    virtual:
+      enabled: true  # Enable Java 21 Virtual Threads
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+logging:
+  level:
+    com.example: DEBUG
+    io.nats: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
